@@ -1,0 +1,75 @@
+# 검색 색인 허용. 사이트맵은 자기 도메인 것만 가리킨다.
+# Disallow 는 모든 그룹에 같이 적는다 — 봇은 그룹 하나만 읽기 때문이다.
+User-agent: *
+Disallow: /search
+Allow: /
+
+# 검색엔진 크롤러 — 전면 허용
+User-agent: Googlebot
+Disallow: /search
+Allow: /
+
+User-agent: Yeti
+Disallow: /search
+Allow: /
+
+User-agent: Bingbot
+Disallow: /search
+Allow: /
+
+User-agent: Daumoa
+Disallow: /search
+Allow: /
+
+# AI 인용·검색 크롤러 — 허용 (답변에 출처로 인용되면 유입이 된다)
+User-agent: GPTBot
+Disallow: /search
+Allow: /
+
+User-agent: OAI-SearchBot
+Disallow: /search
+Allow: /
+
+User-agent: ChatGPT-User
+Disallow: /search
+Allow: /
+
+User-agent: ClaudeBot
+Disallow: /search
+Allow: /
+
+User-agent: Claude-User
+Disallow: /search
+Allow: /
+
+User-agent: Claude-SearchBot
+Disallow: /search
+Allow: /
+
+User-agent: PerplexityBot
+Disallow: /search
+Allow: /
+
+User-agent: Perplexity-User
+Disallow: /search
+Allow: /
+
+# 학습 전용 크롤러 — 인용 유입이 없다. 분리해 둔다.
+# (지금은 허용. 막으려면 sites.json 의 blocked_bots 로 옮기면 된다.)
+User-agent: Applebot-Extended
+Disallow: /search
+Allow: /
+
+User-agent: Google-Extended
+Disallow: /search
+Allow: /
+
+User-agent: meta-externalagent
+Disallow: /search
+Allow: /
+
+# CCBot — 대량 수집. 인용 유입 없음. 차단.
+User-agent: CCBot
+Disallow: /
+
+Sitemap: https://nunpiro.org/sitemap.xml
