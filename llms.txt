@@ -1,0 +1,59 @@
+# 눈피로연구소
+
+> 눈 건강 통합 정보
+
+눈피로연구소는 눈 건강 통합 주제를 다루는 정보 사이트입니다. 겪은 사람들의 질문과 그에 대한 정리를 글로 모았습니다.
+
+## 다루는 범위
+
+- **눈 영양**: 눈 관련 영양 정보입니다.
+- **눈 피로·생활**: 눈 피로와 생활 습관 정보입니다.
+- **눈 질환·검사**: 눈 질환과 검사 기초 정보입니다.
+
+## 글
+
+- [40대 노안안경 추천 좀 해주세요](https://nunpiro.org/eye/40대-노안안경/)
+- [40대 넘어서 ICL 렌즈 삽입술 고민되는데 후기 여쭤봐요](https://nunpiro.org/eye/icl-렌즈-삽입술/)
+- [lal 렌즈 써보신 분 계신가요 품질 궁금해서요](https://nunpiro.org/eye/lal-렌즈/)
+- [RGP렌즈 끼고부터 눈이 너무 침침한데 봐주실 분ㅜ](https://nunpiro.org/eye/rgp렌즈/)
+- [UV차단안경 쓰는 게 민망한데 조언 부탁드려요](https://nunpiro.org/eye/uv차단안경/)
+- [가성근시 회복될 수 있을까요](https://nunpiro.org/eye/가성근시/)
+- [가성근시 검사는 어떻게 하는 건가요](https://nunpiro.org/eye/가성근시-검사/)
+- [각막 벗겨짐 증상 겪어보신 분 계신가요](https://nunpiro.org/eye/각막-벗겨짐/)
+- [각막 부음 원인이 뭔지 궁금해요](https://nunpiro.org/eye/각막-부음/)
+- [각막 찢어짐 증상 이거 맞는 건가요](https://nunpiro.org/eye/각막-찢어짐/)
+- [각막강화술 해보신 분 있으신가요](https://nunpiro.org/eye/각막강화술/)
+- [각막미란 이거 회복 가능한가요;;](https://nunpiro.org/eye/각막미란/)
+- [각막염 치료 받고 있는데 너무 걱정되네요](https://nunpiro.org/eye/각막염-치료/)
+- [각막이영양증 이거 처음 듣는 병명인데 뭔지 궁금해요](https://nunpiro.org/eye/각막이영양증/)
+- [각막하출혈 증상 겪어보신 분 계신가요](https://nunpiro.org/eye/각막하출혈/)
+- [각막혼탁 진단받아서 속상한데 관리법 아시는 분 있으실까요](https://nunpiro.org/eye/각막혼탁/)
+- [각막혼탁 및 반흔 개선이 가능한지 궁금해요](https://nunpiro.org/eye/각막혼탁-및-반흔/)
+- [간헐성 외사시 수술 꼭 해야 할까요](https://nunpiro.org/eye/간헐성-외사시/)
+- [강직성척추염 포도막염 좋은 방법 있을까요](https://nunpiro.org/eye/강직성척추염-포도막염/)
+- [갱년기안구건조증 관리 어떻게 해야 할까요](https://nunpiro.org/eye/갱년기안구건조증/)
+- [건성 황반변성 진단받고 너무 걱정되는데 경험 나눠주세요 ㅠㅠ](https://nunpiro.org/eye/건성-황반변성/)
+- [검열반이 생긴 것 같아요;;](https://nunpiro.org/eye/검열반/)
+- [검열반수술 이런 증상 괜찮은 건가요;;](https://nunpiro.org/eye/검열반수술/)
+- [결막결석 원인이 뭔지 아시는 분 계신가요](https://nunpiro.org/eye/결막결석-원인/)
+- [결막결석 제거 많이 아플까요](https://nunpiro.org/eye/결막결석-제거/)
+- [결막낭종 꼭 수술해야 할까요](https://nunpiro.org/eye/결막낭종/)
+- [결막 모반 있는 분들은 관리를 어떻게 하시나요](https://nunpiro.org/eye/결막모반/)
+- [결막부종 안약 일주일째인데 계속 써도 될까요](https://nunpiro.org/eye/결막부종-안약/)
+- [결막부종 원인이 뭔지 궁금해서요](https://nunpiro.org/eye/결막부종-원인/)
+- [결막염 실명 위험 있을까요 진짜 걱정돼요](https://nunpiro.org/eye/결막염-실명/)
+- [결막염안대 처음 껴보는데 정상인가요](https://nunpiro.org/eye/결막염-안대/)
+- [결막염 안약 추천 좀 해주실 분 계신가요](https://nunpiro.org/eye/결막염-안약/)
+- [결막염 안연고 처음 쓰는데 정상인가요](https://nunpiro.org/eye/결막염-안연고/)
+- [결막염 어린이집 보내도 될까요](https://nunpiro.org/eye/결막염-어린이집/)
+- [결막염 온찜질 해도 괜찮은 건가요](https://nunpiro.org/eye/결막염-온찜질/)
+- [결막염 옮나요 정말 궁금해요;;](https://nunpiro.org/eye/결막염-옮나요/)
+- [결막염 인공눈물 사용해도 괜찮은가요](https://nunpiro.org/eye/결막염-인공눈물/)
+- [결막염 전염성 이렇게까지 불안해도 되나요](https://nunpiro.org/eye/결막염-전염성/)
+- [결막염눈꼽이 계속 나와서 걱정이에요;;](https://nunpiro.org/eye/결막염눈꼽/)
+- [결막염등원 언제쯤 가능한가요;;](https://nunpiro.org/eye/결막염등원/)
+
+## 안내
+
+- 이 사이트의 글은 일반적인 생활 정보이며 의학적 진단이나 치료를 대신하지 않습니다.
+- 사이트맵: https://nunpiro.org/sitemap.xml

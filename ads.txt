@@ -1,0 +1,3 @@
+# 이 파일은 sitegen 이 sites.json 의 analytics.adsense_id 로 생성한다.
+# 손으로 고치지 마라 — 다음 빌드에 덮어쓴다.
+google.com, pub-7081891076335732, DIRECT, f08c47fec0942fa0
