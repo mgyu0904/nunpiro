@@ -1,0 +1,772 @@
+/* nunpiro — 랭글 골격 + 실측 가독성. 웹폰트 요청 0. 본문 18px / 행간 1.95 / measure 680px */
+:root{
+  --primary:#0E7EA0;
+  --primary-solid:#0E7EA0;
+  --primary-fg:#FFFFFF;
+  --primary-ink:#0D7392;
+  --primary-ink-card:#0D7392;
+  --primary-weak:#ECF5F7;
+  --primary-line:#B7D8E2;
+  --bg:#FAF9F8;
+  --card:#FFFFFF;
+  --fg:#23292A;
+  --fg-soft:#383E3F;
+  --muted:#EFEFEC;
+  --muted-weak:#F6F6F4;
+  --border:#E4E4E1;
+  --border-soft:#ECECE9;
+  --muted-fg:#6B6D6D;
+  --link:#0D7392;
+  --font-sans:"Apple SD Gothic Neo", Pretendard, "Noto Sans KR", "Noto Sans CJK KR", "Malgun Gothic", "맑은 고딕", -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  --font-head:"Apple SD Gothic Neo", Pretendard, "Noto Sans KR", "Noto Sans CJK KR", "Malgun Gothic", "맑은 고딕", -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  --fs-body:18px;
+  --lh-body:1.95;
+  --measure:680px;
+  --fs-h1:30px;
+  --fs-list:16px;
+  --fs-meta:12.5px;
+  --fs-label:11.5px;
+  --radius:10px;
+  --radius-sm:5px;
+  --radius-pill:999px;
+  /* 랭글 shadow-sm 실측: 0px 2px 0px #0000000a, 0px 1px 2px -1px #0000000f.
+     흐림이 거의 없는 '납작한 2px 그림자'다. 뭉개진 blur 를 쓰면 바로 싸 보인다. */
+  --shadow-sm:0 2px 0 0 rgba(0,0,0,.035), 0 1px 2px -1px rgba(0,0,0,.06);
+  --row-py:11px;
+  --w-page:1280px;
+  --w-article:896px;
+  --w-side:272px;
+  --gap-col:24px;
+  --h-header:56px;
+  --h-gnb:41px;
+  --pad-x:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --primary:#0F89AE;
+    --primary-solid:#0F89AE;
+    --primary-fg:#101214;
+    --primary-ink:#129FCA;
+    --primary-ink-card:#129FCA;
+    --primary-weak:#17292D;
+    --primary-line:#153F4B;
+    --bg:#191917;
+    --card:#232220;
+    --fg:#EEF1F1;
+    --fg-soft:#D9DBDB;
+    --muted:#2D2D2A;
+    --muted-weak:#201F1D;
+    --muted-fg:#9D9F9E;
+    --border:#42423D;
+    --border-soft:#353431;
+    --link:#129FCA;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.5);
+  }
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:var(--font-sans);font-size:var(--fs-body);line-height:var(--lh-body);
+  display:flex;flex-direction:column;min-height:100vh;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  /* 한국어 줄바꿈: 어절 단위로 끊는다. 없으면 조사만 다음 줄로 떨어진다 */
+  word-break:keep-all;overflow-wrap:break-word;
+}
+a{color:inherit;text-decoration:none}
+a:hover{color:var(--primary-ink)}
+img{max-width:100%;height:auto}
+h1,h2,h3,h4{font-family:var(--font-head);margin:0;line-height:1.4}
+table{border-collapse:collapse}
+:focus-visible{outline:2px solid var(--primary-ink);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--card);
+  color:var(--fg);padding:10px 16px;border:1px solid var(--border);border-radius:var(--radius-sm)}
+.skip:focus{left:12px;top:12px}
+
+/* ---------- 컨테이너 ---------- */
+.container{width:100%;max-width:var(--w-page);margin:0 auto;padding:0 var(--pad-x)}
+/* 🔴 글 상세 컨테이너 = measure + 좌우 패딩. 랭글의 896px 을 그대로 쓰지 않는다.
+   896 을 쓰고 본문에만 measure 를 걸었더니 1440px 화면에서 글이 눈에 띄게 왼쪽으로
+   쏠렸다(실측: 왼쪽 여백 288px / 오른쪽 약 488px). 브레드크럼·제목·작성자줄은 896 폭인데
+   본문만 680 폭이라 한 덩어리로 안 읽힌 것이다.
+   랭글이 896 으로 버티는 건 그 사이트 본문이 짧게 끊어 쓴 커뮤니티 글이라 896 을 다 채워도
+   줄이 길어지지 않기 때문이다(랭글 실측 줄당 중앙값 35자). 우리 원고는 장문이라 못 쓴다.
+   → 폭 숫자를 베끼는 대신 '한 칸으로 읽히는 단일 컬럼'이라는 랭글의 구조를 지킨다. */
+.container--article{max-width:calc(var(--measure) + var(--pad-x) * 2)}
+
+/* ---------- 헤더 (sticky 56px) ----------
+   🔴 헤더/GNB 는 --card(흰색), 본문 영역은 --bg(옅은 색조).
+   전에는 둘 다 --bg 라 머리와 몸이 한 덩어리로 붙어 보였다. 랭글은 색이 같지만
+   그쪽은 헤더 아래에 그림자 띠가 뚜렷하다(실측: 헤더 아래 1px 줄이 #F7F4F1,
+   페이지 #FCFAF8 보다 어둡다). 우리는 표면을 나눠서 같은 '기계 vs 내용' 분리를 만든다. */
+.header{position:sticky;top:0;z-index:50;background:var(--card);
+  border-bottom:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.header__bar{display:flex;height:var(--h-header);align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:9px;flex-shrink:0;font-family:var(--font-head);
+  font-weight:800;font-size:18px;letter-spacing:-.02em}
+/* 🔴 흰 글자를 얹는 면은 반드시 --primary-solid 다(--primary 는 '선명한 색'이지
+   '흰 글자가 읽히는 색'이 아니다). 여기서 --primary 로 바꿨다가 다크 3.5:1 로 떨어졌다. */
+.brand__mark{width:30px;height:30px;border-radius:calc(var(--radius) * .7);flex-shrink:0;
+  background:var(--primary-solid);display:grid;place-items:center;
+  color:var(--primary-fg);font-weight:800;font-size:15px;letter-spacing:0}
+.brand__name{white-space:nowrap}
+.header__tag{font-size:var(--fs-meta);color:var(--muted-fg);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;padding-left:10px;
+  border-left:1px solid var(--border)}
+.header__spacer{flex:1}
+.header__links{display:flex;align-items:center;gap:2px;font-size:13.5px;color:var(--muted-fg)}
+.header__links a{padding:6px 9px;border-radius:var(--radius-sm)}
+.header__links a:hover{background:var(--muted-weak);color:var(--fg)}
+
+/* ---------- GNB ---------- */
+.gnb{border-top:1px solid var(--border-soft);background:var(--card)}
+.gnb__inner{display:flex;align-items:center;overflow-x:auto;scrollbar-width:none}
+.gnb__inner::-webkit-scrollbar{display:none}
+.gnb a{position:relative;padding:10px 12px;font-size:14px;font-weight:500;
+  white-space:nowrap;color:var(--muted-fg)}
+.gnb a:hover{color:var(--fg)}
+.gnb a[aria-current="page"]{color:var(--primary-ink);font-weight:700}
+.gnb a[aria-current="page"]::after{content:"";position:absolute;left:12px;right:12px;
+  bottom:0;height:2px;background:var(--primary)}
+
+/* ---------- 레이아웃 ---------- */
+.main{flex:1;width:100%;padding-bottom:56px}
+.layout{display:flex;gap:var(--gap-col);padding:20px 0}
+.layout__main{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px}
+.layout__side{width:var(--w-side);flex-shrink:0}
+.layout__side-inner{position:sticky;top:calc(var(--h-header) + var(--h-gnb) + 8px);
+  display:flex;flex-direction:column;gap:16px}
+.card{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden}
+
+.pagehead{padding:4px 0 0}
+.pagehead h1{font-size:22px;font-weight:700;display:flex;align-items:center;gap:8px;
+  letter-spacing:-.02em}
+.pagehead p{margin:6px 0 0;font-size:14px;color:var(--muted-fg);line-height:1.6}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;
+  gap:8px;margin-bottom:9px}
+/* 🔴 강조색이 '살아 있게' 보이는 자리. 랭글은 섹션 제목 왼쪽에 주황 아이콘(🔥)을 둔다.
+   우리는 아이콘 자산이 없으니 같은 자리에 3px 막대를 세운다 — 글자색은 건드리지 않아
+   대비 계산에 영향이 없고, 화면당 강조색이 딱 필요한 만큼만 나온다. */
+.sectionhead h2{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;
+  letter-spacing:-.01em}
+.sectionhead h2::before{content:"";width:3px;height:14px;border-radius:2px;
+  background:var(--primary);flex-shrink:0}
+.sectionhead a,.sectionhead span{font-size:12px;color:var(--muted-fg)}
+
+/* ---------- 카테고리 칩 ---------- */
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:5px 13px;border-radius:var(--radius-pill);font-size:13px;
+  font-weight:500;background:var(--muted);color:var(--muted-fg);white-space:nowrap;
+  border:1px solid transparent}
+.chip:hover{color:var(--fg);border-color:var(--border)}
+.chip[aria-current="page"]{background:var(--primary-solid);color:var(--primary-fg);
+  font-weight:600;border-color:var(--primary-solid)}
+
+/* ===================== 목록 — 축 C ===================== */
+.list__head{display:flex;align-items:center;gap:8px;padding:9px 16px;line-height:1.45;
+  border-bottom:1px solid var(--border);background:var(--muted-weak);
+  font-size:var(--fs-label);font-weight:600;color:var(--muted-fg);letter-spacing:.02em}
+.list__head .c-title{flex:1}
+/* 작성자 열은 고정폭이다. 폭을 안 잡으면 닉네임 길이(2~7자)만큼 열 왼쪽 끝이
+   행마다 들쭉날쭉해져서 '표'가 아니라 '문장'으로 보인다. 랭글도 고정폭이다. */
+/* 84 → 112px. 아바타가 26px 을 먹어 5자 닉(54px)이 전부 잘렸다. 데스크톱은 제목에 여유가 있다. */
+.list__head .c-author{width:112px}
+.list__head .c-cat{width:104px}
+.list__head .c-date{width:74px;text-align:right}
+/* 조회·댓글 열이 붙을 자리(마크업이 생기면 바로 자리를 잡는다) */
+.list__head .c-views,.list__head .c-cmt{width:52px;text-align:right}
+
+/* 🔴 행 높이는 --row-py 만으로 정해지지 않는다. 여기서 line-height 를 안 잡으면
+   행 제목이 body 의 본문 행간(--lh-body, 1.75~1.95)을 물려받는다.
+   실측: nunpiro 는 16px 글자 × 1.95 = 31px 줄 + 상하 14px = 행 60px 이 됐다.
+   랭글은 42px 이다(14px 글자 / 줄 20px = 1.43). 본문 행간은 '읽는 글' 용이지
+   '훑는 목록' 용이 아니다. 목록에만 1.45 를 따로 건다. */
+.row{display:flex;align-items:center;gap:8px;padding:var(--row-py) 16px;
+  line-height:1.45;border-bottom:1px solid var(--border-soft)}
+.row:last-child{border-bottom:0}
+.row:hover{background:var(--muted-weak)}
+.row__title{flex:1;min-width:0;font-size:var(--fs-list);font-weight:500;color:var(--fg);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row:hover .row__title{color:var(--primary-ink)}
+/* 🔴 분류를 '회색 글씨'가 아니라 '작은 알약'으로. 랭글 목록의 각 행에도 분류 배지가 있고
+   그 배지가 행마다 반복되면서 목록에 리듬이 생긴다(실측: 행 높이 41px 에 배지 20px).
+   글씨만 두면 제목·분류·날짜가 전부 같은 회색 덩어리로 읽힌다. */
+.row__cat{flex-shrink:0;width:104px;font-size:11.5px;color:var(--muted-fg);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row__cat > span,.row__cat a{display:inline-block;max-width:100%;padding:2px 8px;
+  border-radius:var(--radius-pill);background:var(--muted);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;vertical-align:middle}
+.row__badge{flex-shrink:0;font-size:11.5px;color:var(--muted-fg);background:var(--muted);
+  padding:2px 8px;border-radius:var(--radius-pill);white-space:nowrap}
+/* 🔴 작성자. 알약(row__cat)이 아니라 **맨 글씨**로 둔다.
+   한 행에 알약이 둘이면 분류 배지가 만들던 리듬이 사라지고 행이 다시 덩어리가 된다
+   (랭글도 행에 배지는 게시판 하나뿐이고 작성자는 맨 글씨다).
+   색은 제목보다 연하고 날짜보다 진하게 — 훑을 때 두 번째로 읽히게. */
+.row__author{flex-shrink:0;width:112px;font-size:12px;color:var(--fg-soft);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  display:flex;align-items:center;gap:6px}
+/* 이니셜 아바타(랭글 작성자 칸과 같은 구조). 20px = 행 36px 을 안 미는 최대치.
+   flex-shrink:0 없으면 긴 닉 행에서 원이 타원이 된다. 근거는 README '목록의 색'. */
+.av{flex-shrink:0;width:20px;height:20px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:10.5px;font-weight:700;line-height:1;font-style:normal;
+  letter-spacing:0;user-select:none}
+.row__author .av{margin-left:-1px}
+/* 이름 쪽만 줄임표를 먹는다. 원에 걸면 원이 잘려서 반달이 된다. */
+.row__nick{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row__date{flex-shrink:0;width:74px;text-align:right;font-size:var(--fs-meta);
+  color:var(--muted-fg);white-space:nowrap;font-variant-numeric:tabular-nums}
+/* 조회수·댓글수 칸. 숫자는 tabular 로 고정폭 — 안 그러면 자릿수마다 열이 흔들린다 */
+.row__views,.row__cmt{flex-shrink:0;width:52px;text-align:right;font-size:var(--fs-meta);
+  color:var(--muted-fg);white-space:nowrap;font-variant-numeric:tabular-nums}
+/* 🔴 댓글 수만 강조색. 목록 본문에 브랜드 색이 한 점도 없었다(랭글은 제목 뒤 [4] 가 주황).
+   --primary-ink 는 모든 표면 위 4.5:1 이 보장된 계산값이라 대비 검사가 이미 끝나 있다. */
+.row__cmt{color:var(--primary-ink);font-weight:600}
+.row__excerpt{display:none}
+
+/* summary: 제목 + 2줄 발췌 */
+[data-list="summary"] .list__head{display:none}
+[data-list="summary"] .row{flex-wrap:wrap;align-items:flex-start;padding:16px}
+[data-list="summary"] .row__title{white-space:normal;font-size:calc(var(--fs-list) + 2px);
+  font-weight:600;line-height:1.5;flex-basis:100%}
+[data-list="summary"] .row__excerpt{display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden;flex-basis:100%;margin-top:6px;
+  font-size:13.5px;line-height:1.65;color:var(--muted-fg)}
+[data-list="summary"] .row__cat,[data-list="summary"] .row__date,
+[data-list="summary"] .row__views,[data-list="summary"] .row__cmt,
+[data-list="summary"] .row__author{width:auto;margin-top:8px}
+[data-list="summary"] .row__date{margin-left:auto}
+[data-list="summary"] .row__views,[data-list="summary"] .row__cmt{margin-left:0}
+/* summary/card 는 제목이 여러 줄이라 메타가 아래로 흐른다. 작성자는 그 줄의
+   맨 앞이라 오른쪽 여백(margin-left:auto)을 날짜에 넘겨야 한다 — 안 그러면
+   작성자가 오른쪽 끝으로 밀려 날짜와 붙는다. */
+[data-list="summary"] .row__author{margin-right:auto}
+
+/* card: 2열 그리드 */
+[data-list="card"] .list__head{display:none}
+/* 🔴 칸 사이 선을 'gap 1px + 배경색' 으로 만들지 않는다.
+   글이 홀수면 마지막 줄 오른쪽 칸이 비는데, 그 빈칸에 배경색이 그대로 비쳐
+   색이 칠해진 빈 상자가 생긴다(실제로 glowtalk 홈에서 보였다).
+   선은 각 행의 border 로 긋는다 — 빈칸에는 아무것도 안 남는다. */
+[data-list="card"] .list__body{display:grid;grid-template-columns:repeat(2,1fr);gap:0;
+  background:var(--card)}
+[data-list="card"] .row{display:flex;flex-flow:row wrap;align-items:center;row-gap:8px;
+  column-gap:10px;background:var(--card);padding:18px 16px;
+  border-bottom:1px solid var(--border-soft);border-right:1px solid var(--border-soft)}
+[data-list="card"] .row:nth-child(2n){border-right:0}
+[data-list="card"] .row__title{white-space:normal;font-size:calc(var(--fs-list) + 1px);
+  font-weight:600;line-height:1.5;flex:0 0 100%}
+[data-list="card"] .row__excerpt{display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;
+  -webkit-box-orient:vertical;overflow:hidden;flex:0 0 100%;
+  font-size:13px;line-height:1.65;color:var(--muted-fg)}
+[data-list="card"] .row__cat,[data-list="card"] .row__date,
+[data-list="card"] .row__views,[data-list="card"] .row__cmt,
+[data-list="card"] .row__author{width:auto}
+[data-list="card"] .row__date{margin-left:auto}
+[data-list="card"] .row__views,[data-list="card"] .row__cmt{margin-left:0}
+[data-list="card"] .row__author{margin-right:auto}
+
+/* '그냥 목록'(추천/최신)은 축 C 변형을 따르지 않는다 — 그리드 빈칸/세로 늘어짐 방지 */
+.list__body--plain{display:block!important;background:none!important}
+.list__body--plain .row{display:flex!important;flex-flow:row nowrap!important;
+  align-items:center!important;gap:8px;padding:var(--row-py) 16px!important;
+  border-bottom:1px solid var(--border-soft)!important}
+.list__body--plain .row:last-child{border-bottom:0!important}
+.list__body--plain .row__title{flex:1 1 auto!important;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;font-size:var(--fs-list);font-weight:500}
+.list__body--plain .row__excerpt{display:none!important}
+.list__body--plain .row__views{width:auto}
+
+/* ---------- 페이지네이션 (전부 진짜 <a>) ---------- */
+.pager{display:flex;align-items:center;justify-content:center;gap:4px;
+  padding:20px 0 8px;flex-wrap:wrap}
+.pager a,.pager span{height:32px;min-width:32px;padding:0 8px;border-radius:var(--radius-sm);
+  display:inline-flex;align-items:center;justify-content:center;font-size:14px;color:var(--fg)}
+.pager a:hover{background:var(--muted)}
+.pager [aria-current="page"]{background:var(--primary-solid);color:var(--primary-fg);font-weight:600}
+.pager .is-disabled{opacity:.4}
+.pager .ellipsis{color:var(--muted-fg);min-width:24px;user-select:none}
+
+/* ---------- 사이드바 모듈 ---------- */
+.side__title{display:flex;align-items:center;gap:7px;
+  padding:13px 16px 9px;font-size:12px;font-weight:700;color:var(--muted-fg);
+  letter-spacing:.06em;text-transform:uppercase}
+.side__title::before{content:"";width:3px;height:12px;border-radius:2px;
+  background:var(--primary);flex-shrink:0}
+.rank{list-style:none;margin:0;padding:2px 10px 10px}
+.rank li a{display:flex;align-items:flex-start;gap:9px;padding:8px 6px;
+  border-radius:var(--radius-sm)}
+.rank li a:hover{background:var(--muted-weak)}
+/* 🔴 번호에 강조색을 쓰지 않는다. 이 목록은 '최근 글'이지 '인기글'이 아니다.
+   랭글이 1~3위를 주황으로 칠하는 건 실제로 순위를 잰 목록이라서다. 우리는 순위를
+   잰 적이 없으므로 색으로 순위를 암시하면 그건 없는 사실을 그리는 것이다. */
+.rank__no{flex-shrink:0;width:15px;font-size:11.5px;font-weight:700;
+  color:var(--muted-fg);margin-top:3px;font-variant-numeric:tabular-nums;text-align:right}
+.rank__t{flex:1;min-width:0;font-size:var(--fs-list);line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden}
+.rank li a:hover .rank__t{color:var(--primary-ink-card)}
+.side__links{list-style:none;margin:0;padding:0 10px 12px}
+.side__links a{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:8px;font-size:var(--fs-list);border-radius:var(--radius-sm)}
+.side__links a:hover{background:var(--muted-weak)}
+.side__links b{font-weight:600}
+/* 글 수는 강조색을 옅게 깐 배지로. 사이드바에 색이 하나도 없으면 판때기처럼 보인다 */
+.side__links em{font-style:normal;font-size:11.5px;color:var(--primary-ink-card);
+  background:var(--primary-weak);border-radius:var(--radius-pill);padding:2px 8px;
+  font-variant-numeric:tabular-nums;flex-shrink:0}
+
+/* ===================== 글 상세 ===================== */
+/* 랭글 글 상세는 위에서부터 [주황 굵은 게시판 이름] → [아주 큰 제목] → [작은 회색 메타]
+   순으로 크기·색이 계단처럼 떨어진다(실측). 그 계단이 우리 쪽엔 없어서 제목·메타·본문이
+   비슷한 무게로 읽혔다. 브레드크럼을 강조색·굵게 올려 계단의 첫 칸을 만든다. */
+.crumbs{font-size:13px;color:var(--muted-fg);margin-bottom:12px;display:block;
+  font-weight:600;letter-spacing:-.01em}
+.crumbs a{color:var(--primary-ink)}
+.crumbs a:hover{text-decoration:underline;text-underline-offset:3px}
+.crumbs span[aria-current]{color:var(--muted-fg);font-weight:500}
+.post__title{font-size:var(--fs-h1);font-weight:800;line-height:1.34;
+  margin-bottom:16px;letter-spacing:-.025em;max-width:22em;text-wrap:balance}
+.post__meta{display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--border);
+  padding-bottom:16px;margin-bottom:24px}
+.post__avatar{width:36px;height:36px;border-radius:var(--radius-pill);flex-shrink:0;
+  background:var(--primary-weak);color:var(--primary-ink-card);display:grid;place-items:center;
+  font-weight:800;border:1px solid var(--primary-line);font-size:14px}
+.post__author{font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.post__submeta{display:flex;flex-wrap:wrap;align-items:center;gap:9px;font-size:12.5px;
+  color:var(--muted-fg);margin-top:3px}
+/* 조회수·댓글수가 메타줄에 붙을 자리(숫자는 고정폭) */
+.post__submeta .stat{font-variant-numeric:tabular-nums}
+/* 실측 조회수. 랭글 상세도 눈 아이콘 + 숫자다(app.js: `조회 ` + viewCount).
+   값이 없으면 이 span 자체가 렌더되지 않는다 — 빈 껍데기가 생길 일이 없다. */
+.post__views{display:inline-flex;align-items:center;gap:4px;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.ico-eye{width:13px;height:13px;flex-shrink:0;opacity:.75}
+
+.notice{border:1px solid var(--primary-line);background:var(--primary-weak);
+  border-radius:var(--radius-sm);padding:12px 16px;font-size:14px;line-height:1.7;
+  margin-bottom:22px;max-width:var(--measure)}
+.notice:empty,.toc:empty,.tags:empty{display:none}
+
+/* 목차 — 랭글엔 없다. 우리 원고는 장문이라 넣는다 */
+.toc{border:1px solid var(--border);background:var(--muted-weak);
+  border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:24px;max-width:var(--measure)}
+.toc__t{font-size:12px;font-weight:700;color:var(--muted-fg);letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:6px}
+.toc ol{margin:0;padding-left:1.25em;font-size:14px;line-height:1.9}
+.toc a{color:var(--fg)}
+.toc a:hover{color:var(--primary-ink)}
+
+/* 🔴 본문 — measure 가 걸리는 유일한 곳 */
+.post-content{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--fg-soft);
+  max-width:var(--measure);min-height:200px}
+.post-content > * + *{margin-top:1.15em}
+.post-content h2{font-size:1.3em;font-weight:700;line-height:1.45;color:var(--fg);
+  margin-top:2.2em;margin-bottom:.7em;padding-bottom:.4em;
+  border-bottom:1px solid var(--border);scroll-margin-top:calc(var(--h-header) + 12px)}
+.post-content h2:first-child{margin-top:0}
+.post-content h3{font-size:1.1em;font-weight:700;line-height:1.5;color:var(--fg);
+  margin-top:1.8em;margin-bottom:.5em}
+.post-content p{margin:0}
+/* 🔴 리드 문단 — 실측에 따른 대응.
+   주입된 원고 1,354편의 블록 종류를 세어 보니 **전부 p 다. h2 0개 · 태그 0개.**
+   (카페 Q&A 원고라서 그렇다. 랭글 본문도 같다 — ILANGGLE_SPEC §10: 태그는 <br> 하나뿐)
+   소제목이 없으면 900자짜리 글이 통짜 덩어리로 보인다. 그래서 첫 문단만 시각적으로
+   키워 진입점을 만든다. **본문 텍스트는 건드리지 않는다 — 순수 CSS 위계다.**
+   (원고 본문 무수정 제약을 지키면서 구조를 주는 유일한 방법) */
+.post-content > p:first-of-type{font-size:1.06em;line-height:1.75;
+  color:var(--fg);font-weight:500}
+.post-content ul,.post-content ol{margin:0;padding-left:1.5em}
+.post-content li + li{margin-top:.45em}
+.post-content li::marker{color:var(--primary-ink)}
+.post-content a{color:var(--link);text-decoration:underline;text-underline-offset:2px}
+.post-content strong{font-weight:700;color:var(--fg)}
+.post-content blockquote{margin:0;padding:.85em 1.15em;border-left:3px solid var(--primary);
+  background:var(--muted-weak);border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  color:var(--fg)}
+.post-content blockquote p{margin:0}
+/* 🔴 문단 간격 복구 — 위 `.post-content > * + *{margin-top:1.15em}`(764행) 이
+   죽어 있었다. 뒤에 오는 리셋들(`.post-content p{margin:0}` 771행,
+   `.post-content ul,ol` 780행, `blockquote` 785행)은 특정도가 (0,1,1) 이라
+   흐름 규칙 (0,1,0) 을 이긴다. 그래서 인접 문단 간격이 전부 0px 였다.
+   CDP CSS.getMatchedStylesForNode 로 확인 — p 에 매치된 마지막 규칙이
+   `.post-content p{margin:0}` 이고 margin-top:0px 로 덮어쓰고 있었다.
+   원고가 전부 p 라(772~777행 주석) 글 하나가 통짜 덩어리로 렌더됐다.
+   `:is()` 는 인자 중 가장 센 것(타입 0,0,1)을 취하므로 여기 특정도는 (0,1,1) —
+   리셋들과 동률이고 **소스 순서가 뒤라서** 이긴다.
+   h2/h3 는 일부러 뺐다(각자 2.2em/1.8em 를 이미 갖고 있다).
+   본문 텍스트는 손대지 않는다 — 순수 CSS. */
+.post-content > * + :is(p,ul,ol,blockquote,div,table,figure,pre){margin-top:1.15em}
+.post-content .note{padding:.85em 1.15em;background:var(--muted-weak);
+  border:1px solid var(--border);border-radius:var(--radius-sm);font-size:.95em}
+/* 본문 사진 — 폭을 넘지 않게, 자리를 미리 잡아두게.
+   🔴 aspect-ratio 를 width/height 속성에서 받아 두면 이미지가 늦게 떠도
+      글이 아래로 밀리지 않는다(레이아웃 이동 방지). */
+.post-content .pimg{margin-left:0;margin-right:0}
+.post-content .pimg img{display:block;width:100%;height:auto;max-width:100%;
+  border-radius:var(--radius-sm);background:var(--muted-weak)}
+.post-content .pimg figcaption{margin-top:.5em;font-size:.86em;color:var(--muted-ink);
+  text-align:left}
+.post-content table{width:100%;font-size:.92em}
+.post-content th,.post-content td{border:1px solid var(--border);padding:8px 10px;text-align:left}
+.post-content th{background:var(--muted-weak);font-weight:700}
+.table-wrap{overflow-x:auto}
+
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 0;padding:0;list-style:none}
+.tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;
+  font-size:12.5px;font-weight:500;background:var(--primary-weak);
+  color:var(--primary-ink);border:1px solid var(--primary-line)}
+
+/* 하단 블록 */
+.minilist{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;
+  margin-top:32px;background:var(--card)}
+.minilist__head{padding:8px 16px;background:var(--muted-weak);
+  border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--muted-fg)}
+.minilist ul{list-style:none;margin:0;padding:0}
+.minilist li{border-bottom:1px solid var(--border-soft)}
+.minilist li:last-child{border-bottom:0}
+.minilist a{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;gap:12px}
+.minilist a:hover{background:var(--muted-weak)}
+.minilist__t{font-size:var(--fs-list);color:var(--fg);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.minilist a:hover .minilist__t{color:var(--primary-ink)}
+.minilist__m{font-size:12px;color:var(--muted-fg);flex-shrink:0;white-space:nowrap}
+
+/* 같은 분류 목록 통째 재노출 — 랭글의 진짜 무기(글 1편당 내부링크 다발) */
+/* ===================== 댓글 =====================
+   랭글 골격(헤더에 개수, 아바타+닉+날짜, 본문)을 따른다.
+   🔴 화면 표시 전용이다 — JSON-LD 에는 이 영역이 아예 안 들어간다(seo.py 무관). */
+.cmbox{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;
+  margin-top:24px;background:var(--card)}
+.cmbox__head{display:flex;align-items:center;gap:6px;padding:8px 12px;
+  background:var(--muted-weak);border-bottom:1px solid var(--border);
+  font-size:12px;font-weight:700;color:var(--muted-fg)}
+.cmbox__n{display:inline-flex;align-items:center;justify-content:center;
+  min-width:18px;height:18px;padding:0 5px;border-radius:999px;
+  background:var(--primary-weak);color:var(--primary-ink-card);font-size:11px}
+.cm{margin:0;padding:0;list-style:none}
+.cm__item{display:flex;gap:10px;padding:12px;border-bottom:1px solid var(--border-soft)}
+.cm__item:last-child{border-bottom:0}
+/* 프로필 — 글자 대신 사람 실루엣(comments.py `_person`). 색은 .av--N 이 준다. */
+.cm__avatar{width:28px;height:28px;flex-shrink:0;border-radius:999px;
+  display:grid;place-items:center;overflow:hidden;border:1px solid var(--border)}
+.cm__face{display:block;opacity:.62;margin-bottom:-3px}
+.cm__body{min-width:0;flex:1}
+.cm__head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin-bottom:3px}
+.cm__nick{font-size:13px;font-weight:600;color:var(--fg)}
+.cm__date{font-size:11.5px;color:var(--muted-fg)}
+/* 채택답변 — 지식iN 모양. 🔴 배지 문구에 자격·직함을 넣지 않는다(comments.py 절대 선 ①) */
+.cm__item--pick{background:var(--primary-weak-bg,var(--muted-weak))}
+.cm__pick{display:inline-flex;align-items:center;height:17px;padding:0 6px;
+  border-radius:3px;background:var(--primary);color:#fff;font-size:10.5px;
+  font-weight:700;letter-spacing:-.2px}
+.cmbox__pick{margin-left:auto;font-size:11px;color:var(--primary)}
+/* 대댓글 — 들여쓰기 + 꺾쇠. 부모 바로 뒤에 온다(CommentStore._thread) */
+.cm__item--re{padding-left:34px;background:var(--muted-weak)}
+.cm__re{flex-shrink:0;color:var(--muted-fg);font-size:12px;line-height:28px;
+  margin-left:-16px;margin-right:-2px}
+/* 🔴 댓글은 사용자 문장이라 줄바꿈 위치를 강제하지 않는다(keep-all + 긴 낱말 대비) */
+.cm__text{margin:0;font-size:13.5px;line-height:1.75;color:var(--fg-soft);
+  word-break:keep-all;overflow-wrap:anywhere;max-width:var(--measure)}
+.cmbox__note{margin:0;padding:9px 12px;border-top:1px solid var(--border);
+  background:var(--muted-weak);font-size:11.5px;line-height:1.6;color:var(--muted-fg)}
+
+.boardbox{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;
+  margin-top:24px;background:var(--card)}
+.boardbox__head{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:8px 12px;background:var(--muted-weak);border-bottom:1px solid var(--border);
+  font-size:12px;font-weight:700;color:var(--muted-fg)}
+/* 🔴 table-layout:fixed 인 이유.
+   기본(auto)에서는 제목 칸이 가장 긴 제목만큼 벌어져서 표 전체가 컨테이너보다
+   넓어진다. 열이 3개일 땐 티가 안 났는데 작성자 열을 넣자 390px 에서 표가
+   404px 이 되어 .table-wrap 이 가로 스크롤을 만들었다(실측: 표 폭 421-17).
+   fixed 로 두면 지정한 폭이 그대로 지켜지고 남는 폭이 제목에 간다 —
+   제목은 이미 .bt__t 에서 줄임표 처리라 잘려도 깨지지 않는다. */
+.boardtable{width:100%;table-layout:fixed;font-size:14px;line-height:1.45}
+.boardtable .c-no{width:46px}
+.boardtable .c-date{width:78px}
+.boardtable thead tr{background:var(--muted-weak);border-bottom:1px solid var(--border);
+  color:var(--muted-fg);font-size:12px}
+.boardtable th{padding:8px 12px;font-weight:600;text-align:center}
+.boardtable th.c-title{text-align:left}
+.boardtable td{padding:8px 12px;text-align:center;font-size:12.5px;color:var(--muted-fg);
+  border-bottom:1px solid var(--border-soft)}
+.boardtable tr:last-child td{border-bottom:0}
+.boardtable td.c-title{text-align:left}
+/* 작성자 열. 고정폭 + 줄임표 — 닉네임이 길어도 제목 열을 밀지 않는다. */
+/* 88 → 114px. 목록과 같은 이유(아바타 26px). fixed 레이아웃이라 안 늘리면 닉만 잘린다. */
+.boardtable th.c-author,.boardtable td.c-author{width:114px;max-width:114px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 표 안 작성자칸도 목록과 같은 문법(원 + 이름). td 는 flex 로 바꾸면 세로
+   정렬이 무너지므로 inline-flex 로 감싸지 않고 요소 둘을 그대로 세운다. */
+.boardtable td.c-author{display:flex;align-items:center;gap:6px}
+.boardtable tbody tr:hover{background:var(--muted-weak)}
+.boardtable tr.is-current{background:var(--primary-weak)}
+.boardtable tr.is-current .bt__t{color:var(--primary-ink-card);font-weight:700}
+.bt__link{display:flex;align-items:center;gap:6px;min-width:0}
+.bt__t{font-size:14px;color:var(--fg);overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;min-width:0}
+.bt__link:hover .bt__t{color:var(--primary-ink)}
+.bt__mark{color:var(--primary-ink-card);font-size:12px;flex-shrink:0}
+
+/* ---------- 검색 ----------
+   🔴 전에는 제출 버튼이 강조색으로 꽉 찬 사각형이었다. 그 결과 화면에서 가장 눈에 띄는
+   것이 '내용'이 아니라 '입력 도구'였다 — 이게 컬러가 촌스러워 보인 가장 큰 원인이다.
+   랭글의 검색은 둥근 테두리 한 겹에 회색 돋보기뿐, 채워진 색 블록이 아예 없다
+   (실측: 랭글에서 채도 높은 면적은 '회원가입' 알약 하나 + 활성 칩 하나뿐).
+   → 입력과 버튼을 알약 하나로 합치고 버튼은 무채색으로 내린다. 강조색은 포커스에만. */
+.search{display:flex;align-items:center;gap:0;min-width:0;
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius-pill);
+  overflow:hidden}
+.search:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-weak)}
+.search input{flex:1;min-width:0;height:34px;padding:0 14px;font:inherit;font-size:14px;
+  color:var(--fg);background:transparent;border:0;
+  -webkit-appearance:none;appearance:none}
+.search input::placeholder{color:var(--muted-fg)}
+.search input:focus{outline:none}
+.search button{height:34px;padding:0 15px;font:inherit;font-size:13px;font-weight:600;
+  color:var(--muted-fg);background:transparent;border:0;border-left:1px solid var(--border);
+  cursor:pointer;white-space:nowrap}
+.search button:hover{color:var(--primary-ink-card);background:var(--muted-weak)}
+/* 헤더 검색은 데스크톱에만. 모바일은 GNB 아래 전용 줄로 내려간다(랭글과 같은 처리) */
+.search--header{width:clamp(180px,26vw,300px);flex-shrink:0}
+.header__mobile{display:none;padding-bottom:10px;padding-top:2px}
+.searchbox{padding:14px 16px}
+.search--page input{height:42px;font-size:15.5px}
+.search--page button{height:42px;font-size:14.5px;padding:0 18px}
+.searchresult{display:flex;flex-direction:column;gap:12px}
+.searchresult__hint{font-size:13.5px;color:var(--muted-fg);margin:0;padding:4px 2px}
+.searchresult__empty{padding:22px 18px;font-size:14px;line-height:1.7;color:var(--muted-fg)}
+.searchresult__empty p{margin:0 0 6px}
+.searchresult__empty p:last-child{margin:0}
+.searchresult .sectionhead span{font-size:12px;color:var(--muted-fg)}
+/* 검색 결과 행은 항상 '요약형'이다 — 축 C(table/card)와 무관하게 읽기 좋게 */
+.searchresult .row{flex-wrap:wrap;align-items:flex-start;padding:14px 16px}
+.searchresult .row__title{white-space:normal;flex-basis:100%;font-weight:600;line-height:1.5}
+.searchresult .row__excerpt{display:block;flex-basis:100%;margin-top:5px;font-size:13.5px;
+  line-height:1.65;color:var(--muted-fg)}
+.searchresult .row__cat{width:auto;margin-top:7px}
+
+/* ---------- 이전 글 / 다음 글 ---------- */
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:32px}
+.pn__x{display:flex;flex-direction:column;gap:5px;min-width:0;padding:14px 16px;
+  border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card)}
+.pn__x--next{text-align:right}
+a.pn__x:hover{border-color:var(--primary-solid);background:var(--muted-weak)}
+.pn__lb{font-size:12px;font-weight:700;color:var(--primary-ink-card)}
+.pn__t{font-size:var(--fs-list);line-height:1.5;color:var(--fg);
+  display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden}
+/* 이웃이 한쪽만 있을 때(첫 글·마지막 글). 자리는 지키되 보이진 않게 한다.
+   테두리만 있는 빈 상자를 두면 '덜 만든 화면'으로 읽힌다. display:none 을 쓰면
+   남은 하나가 왼쪽 칸으로 끌려와 '다음 글'이 왼쪽에 붙는다. 그래서 visibility 다. */
+span.pn__x{visibility:hidden}
+
+/* ---------- 전체 글 목록(아카이브) ---------- */
+.arc{margin-top:26px}
+.arc__h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  padding-bottom:8px;margin-bottom:6px;border-bottom:2px solid var(--primary-solid);
+  font-family:var(--font-head);font-size:16px;font-weight:700}
+.arc__h a{color:var(--fg)}
+.arc__h a:hover{color:var(--primary-ink)}
+.arc__h span{font-size:12px;font-weight:500;color:var(--muted-fg)}
+.arc__list{list-style:none;margin:0;padding:0}
+.arc__list li{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  padding:7px 2px;border-bottom:1px solid var(--border-soft)}
+.arc__list li:last-child{border-bottom:0}
+.arc__list a{flex:1;min-width:0;font-size:var(--fs-list);line-height:1.55;color:var(--fg)}
+.arc__list a:hover{color:var(--primary-ink);text-decoration:underline}
+.arc__list time{flex-shrink:0;font-size:12px;color:var(--muted-fg);font-variant-numeric:tabular-nums}
+
+/* ---------- 맨 위로 ---------- */
+.totop{max-width:var(--w-page);margin:0 auto;padding:0 var(--pad-x) 28px;text-align:right}
+.totop a{display:inline-block;padding:8px 16px;font-size:13px;font-weight:600;
+  color:var(--muted-fg);background:var(--card);border:1px solid var(--border);
+  border-radius:999px}
+.totop a:hover{color:var(--primary-ink);border-color:var(--primary-solid)}
+
+/* ---------- 푸터 ---------- */
+.footer{border-top:1px solid var(--border);background:var(--card);padding:30px 0;margin-top:auto}
+.footer .container{text-align:center;font-size:13px;color:var(--muted-fg)}
+.footer__links{display:flex;align-items:center;justify-content:center;gap:14px;
+  margin-bottom:8px;flex-wrap:wrap}
+.footer__note{font-size:12px;line-height:1.65;max-width:52ch;margin:8px auto 0;
+  color:var(--muted-fg)}
+.footer__copy{font-size:12px;margin:0}
+.footer p{margin:4px 0}
+
+/* ---------- 프린트 ---------- */
+@media print{
+  .header,.gnb,.layout__side,.boardbox,.minilist,.pager,.tags,.cmbox,
+  .search,.header__mobile,.totop,.pn{display:none}
+  body{background:#fff;color:#000}
+  .post-content{max-width:none;color:#000}
+}
+.av--0{background:#ECD5CB;color:#A24016}
+.av--1{background:#EAECCB;color:#676C0F}
+.av--2{background:#D1ECCB;color:#247510}
+.av--3{background:#CBECDD;color:#107547}
+.av--4{background:#CBE2EC;color:#13678B}
+.av--5{background:#CDCBEC;color:#241CCA}
+.av--6{background:#E5CBEC;color:#9419B4}
+.av--7{background:#ECCBDA;color:#AF185C}
+@media (prefers-color-scheme: dark){
+    .av--0{background:#654334;color:#E7AF98}
+    .av--1{background:#636534;color:#DFE48C}
+    .av--2{background:#3E6534;color:#A1E590}
+    .av--3{background:#34654F;color:#90E5BF}
+    .av--4{background:#345665;color:#94CDE6}
+    .av--5{background:#363465;color:#A09CE8}
+    .av--6{background:#5B3465;color:#D89CE8}
+    .av--7{background:#65344A;color:#E89CBE}
+}
+
+/* ---------- 반응형 (랭글과 동일 브레이크포인트 640/768/1024/1280) ---------- */
+@media (max-width:1279px){ :root{--w-side:256px} }
+@media (max-width:1023px){ .layout__side{display:none} }
+
+@media (max-width:1023px){ .header__tag{display:none} }
+
+@media (max-width:767px){
+  .header__links{display:none}
+  /* 헤더가 좁아지면 검색은 GNB 아래 전용 줄로 내려간다(랭글과 같은 처리).
+     🔴 기본값 .header__mobile{display:none} 는 _BASE 에 있다 = 이 규칙보다 앞이다.
+     예전에 이 순서를 뒤집어서 모바일 검색줄이 영영 안 뜬 적이 있다. 순서가 규칙이다. */
+  .search--header{display:none}
+  .header__mobile{display:block;padding-bottom:8px;padding-top:0}
+  /* sticky 헤더가 모바일에서 화면을 너무 많이 먹지 않게 조인다.
+     3줄(브랜드/분류/검색) 구성이라 그냥 두면 844px 화면에서 150px = 17% 를 차지했다. */
+  .header__bar{height:52px;gap:10px}
+  .gnb a{padding:8px 11px}
+  .list__head .c-cat,.row__cat{display:none}
+  [data-list="card"] .list__body{grid-template-columns:1fr}
+  [data-list="card"] .row{border-right:0}   /* 1열이 되면 오른쪽 세로선은 허공에 뜬다 */
+  .layout{padding:14px 0}
+  .boardtable .c-cat{display:none}
+  .pn{grid-template-columns:1fr}
+  .pn__x--next{text-align:left}
+  span.pn__x{display:none}   /* 1열에선 빈 칸이 그냥 빈 상자로 보인다 */
+}
+
+@media (max-width:639px){
+  :root{
+    --fs-h1:24px;
+    /* 🔴 모바일 본문 크기는 '줄당 20~28자'에서 역산한 값이다.
+       390px 뷰포트 - 좌우 16px = 358px 에서 실측: 16px→22.3자 / 17px→20.8자 / 18px→19.6자
+       18px 는 20자 아래로 내려가 목표를 깬다. 그래서 큰 글씨 사이트도 여기서 캡을 건다. */
+    --fs-body:17px;
+    --pad-x:16px;
+  }
+  /* 🔴 랭글은 <640 에서 로고 텍스트를 숨긴다. 우리는 숨기지 않는다.
+     랭글엔 알아볼 수 있는 SVG 로고가 있지만 우리 로고는 이름 첫 글자 사각형뿐이라,
+     이름을 숨기면 '보' 같은 글자 하나만 남아 무슨 사이트인지 알 수 없게 된다.
+     390px 실측에서 브랜드 오른쪽으로 342px 가 비어 있었다 = 숨길 이유가 없다.
+     대신 긴 이름이 넘치지 않게 줄임표로 자른다(폭이 모자라도 가로 스크롤이 안 생긴다). */
+  .brand{min-width:0}
+  .brand__name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .list__head .c-date,.row__date{display:none}
+  /* 좁아지면 분류→날짜 순으로 접고 작성자·조회·댓글은 남긴다(정보량이 가장 크다).
+     🔴 작성자는 모바일에서도 살린다 — '회원 게시판'으로 읽히게 하는 신호가
+     이 열 하나뿐이라 여기서 접으면 모바일은 제목만 남은 표가 된다.
+     대신 폭을 84→64px 로 줄여 제목이 먹는 몫을 지킨다(실측으로 확인). */
+  .list__head .c-author,.row__author{width:64px;font-size:11.5px}
+  /* 🔴 모바일은 아바타를 뺀다. 64px 열에서 26px 을 먹으면 닉이 거의 다 잘린다
+     (실측 390px: 목록 4/12행 · 글 하단 표 30/30행). 장식보다 정보를 남긴다. */
+  .av{display:none}
+  .list__head .c-views,.row__views{width:44px}
+  .list__head .c-cmt,.row__cmt{width:34px}
+  .row__badge{display:none}
+  .boardtable .c-no,.boardtable .c-date{display:none}
+  .boardtable th.c-author,.boardtable td.c-author{width:72px;max-width:72px}
+  .post__title{max-width:none}
+  .minilist__m{display:none}
+}
+
+/* ---------- 손가락: 터치 대상 44×44 ---------- */
+@media (pointer:coarse),(max-width:767px){
+  /* 헤더 */
+  .brand{min-height:44px}
+  /* min-width 도 같이 건다. 높이만 걸었더니 두 글자짜리('소개'·'문의')가
+     43.4×44 로 남았다 — .gnb a / .footer__links a / .crumbs a 는 이미 min-width 가
+     있었고 여기만 빠져 있었다. 실측: 768·1024 터치(아이패드 세로/가로, 아이폰 가로)
+     전 화면에서 이 두 링크가 유일한 44px 미달이었다(72/72건). */
+  .header__links a{display:inline-flex;align-items:center;justify-content:center;
+    min-height:44px;min-width:44px;padding:0 10px}
+  /* min-width 도 같이 건다 — '홈' 처럼 한 글자짜리 분류가 34px 로 남는다 */
+  .gnb a{display:inline-flex;align-items:center;justify-content:center;
+    min-height:44px;min-width:44px}
+  /* 검색: 높이 44 + 글자 16px.
+     🔴 16px 미만이면 iOS 사파리가 입력 포커스 때 화면을 자동 확대한다(그리고 안 돌아온다). */
+  .search input{height:44px;font-size:16px}
+  .search button{height:44px;min-width:56px;font-size:15px}
+  .search--page input,.search--page button{height:48px;font-size:16px}
+  /* 칩(태그 줄) */
+  .chips{gap:8px}
+  .chip{display:inline-flex;align-items:center;justify-content:center;
+    min-height:44px;min-width:44px}
+  /* 목록 행 — 행 전체가 하나의 <a> 라 높이만 채우면 손가락 한 칸이 된다 */
+  .row{min-height:44px}
+  .minilist a{min-height:44px}
+  .side__links a,.rank li a{min-height:44px}
+  /* 페이지네이션 — 44px 로 키우면 한 줄에 다 못 들어간다.
+     ① 처음(«)·마지막(») 은 좁은 화면에서 숨긴다.
+        🔴 링크를 없애는 게 아니다. pager_html 은 창 밖 페이지를 항상 번호 링크로도
+        내놓는다(start>1 이면 '1', end<total 이면 마지막 번호). 즉 « » 의 href 는
+        **언제나 번호 링크와 중복**이라 감춰도 크롤러 동선이 줄지 않는다.
+        HTML 에는 그대로 남는다(display:none 이라 로봇은 여전히 읽는다).
+     ② 그래도 넘치면 줄바꿈. 가로 스크롤은 만들지 않는다. */
+  .pager{flex-wrap:wrap;gap:6px;row-gap:8px}
+  .pager a,.pager span{height:44px;min-width:44px}
+  .pager .ellipsis{min-width:24px}
+  /* 게시판 표: 제목 칸 상하 패딩을 0 으로 두고 링크가 44 를 차지하게 한다.
+     (패딩을 남기면 행이 60px 이 되어 표가 쓸데없이 길어진다) */
+  .boardtable td.c-title{padding-top:0;padding-bottom:0}
+  .bt__link{min-height:44px}
+  .boardbox__head a{display:inline-flex;align-items:center;min-height:44px;
+    padding:0 8px;margin:-11px -8px}
+  /* 아카이브 목록 — 한 화면에 수백 줄이 붙는 곳이라 오터치가 가장 잘 난다 */
+  .arc__list li{align-items:center;padding-top:0;padding-bottom:0}
+  .arc__list a{display:flex;align-items:center;min-height:44px}
+  /* 🔴 min-width 도 같이 건다. 높이만 걸어 두면 **분류 이름이 짧은 사이트**에서
+     그대로 44 미만이 된다 — glowtalk 의 '성분'·'루틴' 이 30.4×44 였다(6사이트
+     로컬 렌더 12뷰포트 × 라이트/다크 = 34건). balnemsae·boseup·nunpiro 는 분류
+     이름이 3자 이상이라 우연히 44 를 넘겼을 뿐이고, 두 글자 분류가 하나만 생기면
+     같은 자리에서 똑같이 깨진다. justify-content 는 걸지 않는다 — 이건 제목이라
+     아래 목록 글머리와 왼쪽 선이 맞아야 한다. */
+  .arc__h a{display:inline-flex;align-items:center;min-height:44px;min-width:44px}
+  /* 위로 / 푸터 */
+  /* .totop / .chip 도 같은 모양(inline-flex + min-height 만)이라 같은 가드를 건다.
+     지금 라벨('↑ 맨 위로' 81.8px, 최단 칩 65.2px)로는 둘 다 이미 44 를 넘어서
+     오늘 화면은 1px 도 안 바뀐다(전후 상자 대조로 확인). 라벨이 짧아지는 날을
+     대비한 바닥값이다. */
+  .totop a{display:inline-flex;align-items:center;min-height:44px;min-width:44px}
+  .footer__links{gap:8px}
+  .footer__links a{display:inline-flex;align-items:center;justify-content:center;
+    min-height:44px;min-width:44px;padding:0 10px}
+  /* 브레드크럼 — '홈' 은 11×16px 이었다. 44×44 상자로 만들고 글자를 가운데 둔다.
+     음수 마진은 쓰지 않는다: 상자가 " › " 구분자를 넘어가면 옆 링크 히트박스와
+     겹쳐서 '어느 쪽이 눌렸는지'가 DOM 순서로 정해진다(오터치를 바꾼 게 아니라 숨긴 것). */
+  .crumbs a{display:inline-flex;align-items:center;justify-content:center;
+    min-height:44px;min-width:44px;padding:0 4px;vertical-align:middle}
+}
+
+/* 처음(«)·마지막(») 은 **좁을 때만** 숨긴다.
+   🔴 위 블록(pointer:coarse)에 같이 넣었더니 터치 되는 1024px 태블릿에서도
+   사라졌다 — 거기는 가로가 남아돌아 숨길 이유가 없다. 폭 조건으로 따로 뺀다. */
+@media (max-width:639px){
+  .pager > :first-child,.pager > :last-child{display:none}
+}
+
+/* ---------- 낮은 화면(폰 가로): 고정 헤더 해제 ---------- */
+@media (max-height:500px){
+  .header{position:static}
+}
